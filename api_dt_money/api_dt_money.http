@@ -1,0 +1,6 @@
+@api_dt_money_HostAddress = http://localhost:5232
+
+GET {{api_dt_money_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

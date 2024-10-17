@@ -1,0 +1,29 @@
+# Build
+bin/
+obj/
+
+# User-specific files
+*.csproj.user
+*.suo
+migrations/
+
+# Visual Studio Code settings
+.vscode/
+
+# Visual Studio settings
+.vs/
+
+# Logs
+logs/
+*.log
+
+# App settings (caso contenham segredos)
+appsettings.json
+appsettings.Development.json
+
+# Certificados e chaves privadas
+*.pfx
+*.cer
+
+# Secret files
+secrets.json
