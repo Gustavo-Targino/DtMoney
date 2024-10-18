@@ -1,11 +1,6 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { ApiService } from "../services/Api/ApiService";
+import { createContext, useContextSelector } from "use-context-selector";
 
 export interface Transaction {
   id: number;
@@ -35,8 +30,7 @@ const TransactionsContext = createContext({} as TransactionContextType);
 export function TransactionsProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-
-  const fetchTransactions = async (query?: string) => {
+  const fetchTransactions = useCallback(async (query?: string) => {
     const response = await ApiService.get("/transaction/list", {
       params: {
         description: query,
@@ -44,9 +38,9 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     });
 
     setTransactions(response.data);
-  };
+  }, []);
 
-  async function createTransaction(data: CreateTransactionInput) {
+  const createTransaction = async (data: CreateTransactionInput) => {
     const { description, price, category, type } = data;
 
     const response = await ApiService.post("/transaction/add", {
@@ -57,18 +51,17 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     });
 
     setTransactions((state) => [response.data, ...state]);
-  }
+  };
 
   async function createCategory(name: string) {
     await ApiService.post("/category/add", {
       name,
     });
-
   }
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
   return (
     <TransactionsContext.Provider
@@ -85,7 +78,9 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
 }
 
 export const useTransactions = () => {
-  const context = useContext(TransactionsContext);
+  const context = useContextSelector(TransactionsContext, (context) => {
+    return context;
+  });
 
   return context;
 };
